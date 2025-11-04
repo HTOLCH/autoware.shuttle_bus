@@ -97,7 +97,10 @@ repositories:
   # launcher
   launcher/autoware_launch:
     type: git
-    url: https://github.com/autowarefoundation/autoware_launch.git
+    #Old one:
+    #url: https://github.com/autowarefoundation/autoware_launch.git
+    #New:
+    url: https://github.com/HTOLCH/nuway_autoware_launch
     version: 0.47.0
   # sensor_component
   sensor_component/external/sensor_component_description:
