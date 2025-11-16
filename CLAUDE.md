@@ -45,6 +45,293 @@ Autoware follows a layered architecture:
 
 **Custom Fork**: This repository uses `HTOLCH/nuway_autoware_launch` instead of the standard launcher.
 
+## Source Repository Details
+
+The following sections provide detailed information about the actual source code repositories imported into the `src/` directory.
+
+### Core Repositories (src/core/)
+
+#### autoware_core
+**Location**: `/home/user/autoware.shuttle_bus/src/core/autoware_core/`
+
+The stable, production-ready foundation of Autoware containing ~60 packages organized by domain:
+
+**API Layer** (api/):
+- `autoware_adapi_specs` - AD API specifications
+- `autoware_adapi_adaptors` - API adaptor implementations
+- `autoware_default_adapi` - Default AD API implementations
+
+**Common Utilities** (common/):
+- `autoware_component_interface_specs` - Component interface definitions
+- `autoware_geography_utils` - Geographic coordinate utilities
+- `autoware_interpolation` - Interpolation algorithms (linear, spline, nearest)
+- `autoware_kalman_filter` - Kalman filter implementations
+- `autoware_lanelet2_utils` - Lanelet2 map utilities
+- `autoware_motion_utils` - Trajectory and path utilities
+- `autoware_object_recognition_utils` - Object processing helpers
+- `autoware_osqp_interface` - OSQP quadratic solver interface
+- `autoware_trajectory` - Trajectory data structures
+- `autoware_vehicle_info_utils` - Vehicle parameter management
+
+**Localization** (localization/):
+- `autoware_ekf_localizer` - Extended Kalman Filter for pose estimation
+- `autoware_ndt_scan_matcher` - Normal Distribution Transform scan matching
+- `autoware_gyro_odometer` - Gyroscope-based odometry
+- `autoware_pose_initializer` - Initial pose estimation
+
+**Perception** (perception/):
+- `autoware_euclidean_cluster_object_detector` - Point cloud clustering
+- `autoware_ground_filter` - Ground plane removal
+- `autoware_perception_objects_converter` - Object format conversion
+
+**Planning** (planning/):
+- `autoware_mission_planner` - Global route planning
+- `autoware_velocity_smoother` - Velocity profile optimization (OSQP-based)
+- `behavior_velocity_planner` - Stop line, intersection, crosswalk modules
+- `motion_velocity_planner` - Obstacle avoidance velocity planning
+- `autoware_route_handler` - Route information management
+
+**Control** (control/):
+- `autoware_simple_pure_pursuit` - Pure pursuit controller
+
+**Sensing** (sensing/):
+- `autoware_crop_box_filter` - Point cloud cropping
+- `autoware_downsample_filters` - Voxel grid and random downsampling
+- `autoware_gnss_poser` - GNSS-based positioning
+
+#### autoware_msgs
+**Location**: `/home/user/autoware.shuttle_bus/src/core/autoware_msgs/`
+
+ROS 2 message definitions for core Autoware interfaces:
+
+| Package | Purpose | Key Messages |
+|---------|---------|--------------|
+| `autoware_control_msgs` | Vehicle control | LateralCommand, LongitudinalCommand, ControlHorizon |
+| `autoware_perception_msgs` | Objects & traffic | DetectedObjects, TrackedObjects, TrafficSignalArray |
+| `autoware_planning_msgs` | Trajectories & paths | Trajectory, Path, PathWithLaneId, Scenario |
+| `autoware_sensing_msgs` | Sensor data | PointCloud2, GnssInsOrientationStamped |
+| `autoware_localization_msgs` | Pose estimation | PoseWithCovarianceStamped |
+| `autoware_map_msgs` | Map data | LaneletMapBin, PointCloudMapMetaData |
+| `autoware_vehicle_msgs` | Vehicle state | VelocityReport, SteeringReport, GearReport |
+| `autoware_system_msgs` | System status | AutowareState, EmergencyState |
+| `autoware_v2x_msgs` | V2X communication | Vehicle-to-infrastructure messages |
+
+#### autoware_adapi_msgs & autoware_internal_msgs
+**Location**: `/home/user/autoware.shuttle_bus/src/core/`
+
+- `autoware_adapi_msgs` - Public AD API messages (v1 interface)
+- `autoware_internal_msgs` - Internal debug/metric messages (not for external use)
+
+#### autoware_utils
+**Location**: `/home/user/autoware.shuttle_bus/src/core/autoware_utils/`
+
+Modular utility libraries:
+
+- `autoware_utils_geometry` - Distance, angle, polygon operations
+- `autoware_utils_math` - Normalization, statistics, interpolation
+- `autoware_utils_pcl` - Point Cloud Library wrappers
+- `autoware_utils_rclcpp` - ROS 2 node utilities
+- `autoware_utils_tf` - Transform utilities
+- `autoware_utils_visualization` - RViz marker generation
+
+#### autoware_lanelet2_extension
+**Location**: `/home/user/autoware.shuttle_bus/src/core/autoware_lanelet2_extension/`
+
+Extensions to Lanelet2 HD map library:
+- Custom OSM tags for Autoware (speed limits, traffic lights, stop lines)
+- MGRS and Transverse Mercator projections
+- Traffic light, stop line regulatory elements
+- Map validation and visualization tools
+
+#### autoware_rviz_plugins
+**Location**: `/home/user/autoware.shuttle_bus/src/core/autoware_rviz_plugins/`
+
+RViz visualization plugins:
+- `autoware_localization_rviz_plugin` - Pose and covariance display
+- `autoware_perception_rviz_plugin` - Detected/tracked objects
+- `autoware_planning_rviz_plugin` - Trajectories and paths
+- `autoware_overlay_rviz_plugin` - Mission status overlay
+
+### Universe Repositories (src/universe/)
+
+#### autoware_universe Structure
+**Location**: `/home/user/autoware.shuttle_bus/src/universe/autoware_universe/`
+
+The experimental and extended functionality repository with 200+ packages:
+
+```
+autoware_universe/
+├── common/           # 19 packages - shared utilities
+├── control/          # 20 packages - trajectory following, safety
+├── evaluator/        # 6 packages - performance metrics
+├── localization/     # 8 packages - pose estimation
+├── map/             # 2 packages - map utilities
+├── perception/      # 47 packages - detection, tracking, prediction
+├── planning/        # 19 packages - path and motion planning
+├── sensing/         # 13 packages - sensor preprocessing
+├── simulator/       # 7 packages - simulation tools
+├── system/          # 30 packages - monitoring, diagnostics
+├── vehicle/         # 4 packages - vehicle calibration
+└── visualization/   # 13 packages - RViz plugins
+```
+
+#### Key Universe Packages by Domain
+
+**Perception** (47 packages):
+- **3D Detection**: `autoware_lidar_centerpoint`, `autoware_lidar_transfusion`, `autoware_bevfusion`
+- **Tracking**: `autoware_multi_object_tracker`, `autoware_bytetrack`, `autoware_radar_object_tracker`
+- **Fusion**: `autoware_image_projection_based_fusion`, `autoware_object_merger`
+- **Segmentation**: `autoware_ground_segmentation`, `autoware_euclidean_cluster`
+- **Prediction**: `autoware_map_based_prediction`, `autoware_simpl_prediction`
+- **Filtering**: `autoware_detected_object_validation`, `autoware_raindrop_cluster_filter`
+
+**Planning** (19 packages):
+- **Path Planning**: `behavior_path_planner` (lane follow, lane change, avoidance, pull over modules)
+- **Motion Planning**: `autoware_path_smoother`, `autoware_path_optimizer`
+- **Specialized**: `autoware_freespace_planner` (parking), `autoware_diffusion_planner`
+- **Validation**: `planning_validator`, `autoware_surround_obstacle_checker`
+
+**Control** (20 packages):
+- **Lateral Control**: `autoware_mpc_lateral_controller`, `autoware_pure_pursuit`
+- **Longitudinal Control**: `autoware_pid_longitudinal_controller`
+- **Safety**: `autoware_autonomous_emergency_braking`, `autoware_obstacle_collision_checker`
+- **Command Gating**: `autoware_vehicle_cmd_gate`, `autoware_external_cmd_selector`
+- **Mode Management**: `autoware_operation_mode_transition_manager`, `autoware_shift_decider`
+
+**Localization** (8 packages):
+- **Vision-based**: `yabloc` (particle filter, image processing)
+- **Landmark-based**: `autoware_ar_tag_based_localizer`, `autoware_lidar_marker_localizer`
+- **Fusion**: `autoware_pose_estimator_arbiter`
+- **Monitoring**: `autoware_localization_error_monitor`, `autoware_pose_instability_detector`
+
+**Sensing** (13 packages):
+- **Point Cloud**: `autoware_pointcloud_preprocessor`, `autoware_cuda_pointcloud_preprocessor`
+- **Radar**: `autoware_radar_objects_adapter`, `autoware_radar_static_pointcloud_filter`
+- **IMU**: `autoware_imu_corrector`
+- **Image**: `autoware_image_diagnostics`, `autoware_image_transport_decompressor`
+
+**System** (30 packages):
+- **Monitoring**: `autoware_system_monitor`, `autoware_component_monitor`, `autoware_diagnostic_graph_aggregator`
+- **Safety**: `autoware_mrm_handler`, `autoware_mrm_emergency_stop_operator`
+- **API**: `autoware_default_adapi_universe`, `autoware_default_adapi_helpers`
+- **Mode Management**: `autoware_command_mode_decider`, `autoware_command_mode_switcher`
+
+#### External Dependencies (src/universe/external/)
+
+Third-party packages integrated into Autoware:
+
+- `tier4_ad_api_adaptor` - Tier IV external API bridge
+- `tier4_autoware_msgs` - Extended Tier IV message types
+- `eagleye` - GNSS/IMU-based localization (MapIV)
+- `rtklib_ros_bridge` - RTK-GNSS library integration
+- `bevdet_vendor` - BEV detection model wrapper
+- `cuda_blackboard` - GPU-based data sharing
+- `trt_batched_nms` - TensorRT NMS operations
+- `negotiated` - ROS 2 transport negotiation
+- `glog` - Google logging library (v0.6.0)
+
+### Launcher Repository (src/launcher/)
+
+#### autoware_launch
+**Location**: `/home/user/autoware.shuttle_bus/src/launcher/autoware_launch/`
+
+**Note**: This repository uses the custom fork `HTOLCH/nuway_autoware_launch` instead of the standard Autoware Foundation version.
+
+**Structure**:
+```
+autoware_launch/
+├── config/
+│   ├── control/          # Controller parameters
+│   ├── localization/     # Localization parameters
+│   ├── perception/       # Perception model paths, thresholds
+│   ├── planning/         # Planning behavior parameters
+│   ├── simulator/        # Simulator configurations
+│   └── system/           # System monitoring parameters
+├── launch/
+│   ├── autoware.launch.xml              # Main entry point
+│   ├── components/                      # Component-specific launches
+│   └── tier4_*.launch.xml              # Tier IV specific launches
+├── rviz/                # RViz configuration files
+├── sensor_kit/          # Sensor calibration and configuration
+└── vehicle/             # Vehicle-specific parameters
+```
+
+**Key Configuration Files**:
+- `default_preset.yaml` - Module enable/disable configuration
+- Component parameter files (*.param.yaml) - Runtime parameters for each node
+- Sensor calibration files - Extrinsic calibration matrices
+- Vehicle model files - Dimensions, dynamics, control limits
+
+### Sensor Component Repository (src/sensor_component/)
+
+#### Transport Drivers
+**Location**: `/home/user/autoware.shuttle_bus/src/sensor_component/transport_drivers/`
+
+Generic communication drivers:
+- `udp_driver` - UDP network transport
+- `tcp_driver` - TCP transport (optimized for Hesai LiDAR)
+- `serial_driver` - Serial port communication
+- `io_context` - Asynchronous I/O context
+
+#### ROS 2 SocketCAN
+**Location**: `/home/user/autoware.shuttle_bus/src/sensor_component/ros2_socketcan/`
+
+CAN bus integration for vehicle communication:
+- `ros2_socketcan` - SocketCAN interface node
+- `ros2_socketcan_msgs` - CAN frame messages
+
+#### Nebula
+**Location**: `/home/user/autoware.shuttle_bus/src/sensor_component/external/nebula/`
+
+Universal sensor driver framework supporting multiple LiDAR manufacturers (Velodyne, Hesai, Robosense, etc.)
+
+#### Sensor Component Description
+**Location**: `/home/user/autoware.shuttle_bus/src/sensor_component/external/sensor_component_description/`
+
+URDF and hardware description files for sensor kits.
+
+### Middleware Repository (src/middleware/)
+
+**Location**: `/home/user/autoware.shuttle_bus/src/middleware/external/agnocast/`
+
+Agnocast distributed pub/sub middleware for efficient communication (Tier IV).
+
+### Data Flow Architecture
+
+```
+Sensors (LiDAR/Camera/Radar/GNSS/IMU)
+  ↓ (sensor_component drivers)
+Sensing Layer (preprocessing, filtering)
+  ↓
+┌─────────────────┬──────────────────┐
+│   Perception    │   Localization   │
+│  (detection,    │  (pose estimate) │
+│   tracking)     │                  │
+└────────┬────────┴────────┬─────────┘
+         ↓                 ↓
+    Planning Layer (mission → behavior → motion)
+         ↓
+    Control Layer (lateral + longitudinal)
+         ↓
+    Vehicle Interface (CAN commands)
+```
+
+### Package Count Summary
+
+| Repository | Package Count | Purpose |
+|------------|---------------|---------|
+| autoware_core | ~60 | Stable, production-ready components |
+| autoware_universe | 200+ | Experimental, extended features |
+| autoware_msgs | 10 | Core message definitions |
+| autoware_internal_msgs | 5 | Debug/internal messages |
+| autoware_utils | 12 | Utility libraries |
+| autoware_lanelet2_extension | 1 | Map format extensions |
+| autoware_rviz_plugins | 4 | Visualization plugins |
+| autoware_launch | 1 | Launch configurations |
+| sensor_component | 8+ | Sensor drivers and interfaces |
+| External dependencies | 15+ | Third-party integrations |
+| **Total** | **~320** | Complete autonomous driving stack |
+
 ## Development Environment Setup
 
 ### Prerequisites
